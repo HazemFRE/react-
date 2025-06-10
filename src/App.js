@@ -2,16 +2,34 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 
 const SkipCard = ({ size, price, period, selected, onSelect, image }) => (
-  <div className={`skip-card ${selected ? 'selected' : ''}`}>
-    <img src={image} alt={`${size} Skip`} className="skip-image" />
+  <div 
+    className={`skip-card ${selected ? 'selected' : ''}`}
+    onClick={onSelect}
+  >
+    <div className="image-container">
+      <img src={image} alt={`${size} Skip`} className="skip-image" />
+      <div className="size-badge">{size.split(' ')[0]}</div>
+    </div>
     <div className="card-content">
       <h3>{size}</h3>
-      <p>£{price}</p>
-      <p>{period}</p>
-      <button className={selected ? 'selected-btn' : 'choose-btn'} onClick={onSelect}>
-        {selected ? 'Selected' : 'Choose'}
-      </button>
+      <div className="price-tag">£{price}</div>
+      <p className="period">{period}</p>
+      <div className="select-indicator">
+        {selected ? (
+          <div className="selected-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+            </svg>
+            Selected
+          </div>
+        ) : (
+          <button className="choose-btn">
+            Choose
+          </button>
+        )}
+      </div>
     </div>
+    {selected && <div className="selection-pulse"></div>}
   </div>
 );
 
@@ -32,14 +50,17 @@ function App() {
       { size: '40 Yards', price: 500, period: '14 day hire', image: 'https://enviroskiphire.co.uk/wp-content/uploads/2021/03/skip-rollon.jpg' },
     ];
     setSkipData(dummyData);
-  }, []); // ينفذ مرة واحدة فقط عند التحميل
+  }, []);
 
   return (
     <div className="app-container">
-      <h1 className="app-title">Pick the Perfect Skip Size</h1>
-      <p className="app-subtitle">Choose the skip size that best suits your needs</p>
+      <div className="header">
+        <h1 className="app-title">Find Your Perfect Skip</h1>
+        <p className="app-subtitle">Select the right size for your project needs</p>
+      </div>
+      
       <div className="skip-list">
-        {skipData.map((skip) => (
+        {skipData.map((skip, index) => (
           <SkipCard
             key={skip.size}
             size={skip.size}
@@ -48,12 +69,30 @@ function App() {
             selected={selectedSkip === skip.size}
             onSelect={() => setSelectedSkip(skip.size)}
             image={skip.image}
+            style={{ animationDelay: `${index * 0.1}s` }}
           />
         ))}
       </div>
+      
       <div className="button-group">
-        <button className="back-btn" onClick={() => setSelectedSkip(null)}>Back</button>
-        <button className="continue-btn" disabled={!selectedSkip}>Continue</button>
+        <button 
+          className="back-btn"
+          onClick={() => setSelectedSkip(null)}
+        >
+          <svg viewBox="0 0 24 24">
+            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+          </svg>
+          Back
+        </button>
+        <button 
+          className="continue-btn" 
+          disabled={!selectedSkip}
+        >
+          Continue
+          <svg viewBox="0 0 24 24">
+            <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+          </svg>
+        </button>
       </div>
     </div>
   );
